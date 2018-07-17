@@ -4,12 +4,14 @@
  */
 
 /* Dependencies */
+const config = require('./lib/config');
+const fs = require('fs');
+const handlers = require('./lib/handlers');
+const helpers = require('./lib/helpers');
 const http = require('http');
 const https = require('https');
-const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
-const config = require('./config');
-const fs = require('fs');
+const url = require('url');
 
 // Instantiate HTTP server
 const httpServer = http.createServer((req, res) => {
@@ -75,9 +77,9 @@ const unifiedServer = (req, res) => {
 		const data = {
 			'trimmedPath': trimmedPath,
 			'queryStringObject': queryStringObject,
-			'method': method,
+			'method': method.toLowerCase(),
 			'headers': headers,
-			'payload': buffer
+			'payload': helpers.parseJSONToObject(buffer)
 		};
 
 		// Route request to handler specified in router
@@ -104,20 +106,8 @@ const unifiedServer = (req, res) => {
 	});
 };
 
-// Define handlers
-const handlers = {};
-
-// Ping handler
-handlers.ping = (data, callback) => {
-	callback(200);
-}
-
-// Not found handler
-handlers.notFound = (data, callback) => {
-	callback(404);
-};
-
 // Define request router
 const router = {
-	'ping': handlers.ping
+	'ping': handlers.ping,
+	'users': handlers.users
 };
