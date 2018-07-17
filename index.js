@@ -51,7 +51,7 @@ const unifiedServer = (req, res) => {
 	const queryStringObject = parsedURL.query;
 
 	// Get HTTP method
-	const method = req.method.toUpperCase();
+	const method = req.method.toLowerCase();
 
 	// Get headers as object
 	const headers = req.headers;
@@ -77,7 +77,7 @@ const unifiedServer = (req, res) => {
 		const data = {
 			'trimmedPath': trimmedPath,
 			'queryStringObject': queryStringObject,
-			'method': method.toLowerCase(),
+			'method': method,
 			'headers': headers,
 			'payload': helpers.parseJSONToObject(buffer)
 		};
@@ -109,5 +109,6 @@ const unifiedServer = (req, res) => {
 // Define request router
 const router = {
 	'ping': handlers.ping,
-	'users': handlers.users
+	'users': handlers.users,
+	'tokens': handlers.tokens
 };
