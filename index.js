@@ -4,14 +4,19 @@
  */
 
 /* Dependencies */
+const _helpers = require('./lib/_helpers');
 const config = require('./lib/config');
 const fs = require('fs');
 const handlers = require('./lib/handlers');
-const helpers = require('./lib/helpers');
 const http = require('http');
 const https = require('https');
 const StringDecoder = require('string_decoder').StringDecoder;
 const url = require('url');
+
+// @TODO GET RID OF THIS 
+_helpers.sendTwilioSMS('97613293', 'Hello!', err => {
+	console.log(`Error encountered: ${err}`);
+});
 
 // Instantiate HTTP server
 const httpServer = http.createServer((req, res) => {
@@ -79,7 +84,7 @@ const unifiedServer = (req, res) => {
 			'queryStringObject': queryStringObject,
 			'method': method,
 			'headers': headers,
-			'payload': helpers.parseJSONToObject(buffer)
+			'payload': _helpers.parseJSONToObject(buffer)
 		};
 
 		// Route request to handler specified in router
