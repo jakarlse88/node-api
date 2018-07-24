@@ -1,3 +1,4 @@
 .data/
 .logs/**/*.log
+.logs/**/*.gz.b64
 */**/*.log
