@@ -29,12 +29,24 @@
             </a>
             <!-- Navigation -->
             <ul class="menu">
-                <li><a href="/" >Home</a></li>
-                <li><a href="/account/create" class="loggedOut">Signup</a></li>
-                <li><a href="/sessions/create" class="loggedOut">Login</a></li>
-                <li><a href="/checks/all" class="loggedIn">Dashboard</a></li>
-                <li><a href="/account/edit" class="loggedIn"></a>Account settings</li>
-                <li><a href="#" class="loggedIn"></a>Logout</li>
+                <li>
+                    <a href="/" >Home</a>
+                </li>
+                <li class="loggedOut">
+                    <a href="/account/create">Signup</a>
+                </li>
+                <li class="loggedOut">
+                    <a href="/sessions/create">Login</a>
+                </li>
+                <li class="loggedIn">
+                    <a href="/checks/all">Dashboard</a>
+                </li>
+                <li class="loggedIn">
+                    <a href="/account/edit">Account settings</a>
+                </li>
+                <li class="loggedIn">
+                    <a href="#" id="logoutButton">Logout</a>
+                </li>
             </ul>
         </div>
 
