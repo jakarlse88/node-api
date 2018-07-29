@@ -109,7 +109,10 @@ app.bindLogoutButton = function () {
 };
 
 // Log the user out then redirect them
-app.logUserOut = function () {
+app.logUserOut = redirectUser => {
+  // redirectUser defaults to true
+  redirectUser = typeof (redirectUser) == 'boolean' ? redirectUser : true;
+
   // Get the current token id
   var tokenID = typeof (app.config.sessionToken.tokenID) == 'string' ? app.config.sessionToken.tokenID : false;
 
@@ -122,8 +125,9 @@ app.logUserOut = function () {
     app.setSessionToken(false);
 
     // Send the user to the logged out page
-    window.location = '/session/deleted';
-
+    if (redirectUser) {
+      window.location = '/session/deleted';
+    }
   });
 };
 
@@ -165,32 +169,36 @@ app.bindForms = function () {
           }
         }
 
+        // If the method is DELETE, the payload should be a queryStringObject instead
+        const queryStringObject = method == 'DELETE' ? payload : {};
+
         // Call the API
-        app.client.request(undefined, path, method, undefined, payload, function (statusCode, responsePayload) {
-          // Display an error on the form if needed
-          if (statusCode !== 200) {
+        app.client.request(undefined, path, method, queryStringObject, payload,
+          function (statusCode, responsePayload) {
+            // Display an error on the form if needed
+            if (statusCode !== 200) {
 
-            if (statusCode == 403) {
-              // log the user out
-              app.logUserOut();
+              if (statusCode == 403) {
+                // log the user out
+                app.logUserOut();
 
+              } else {
+
+                // Try to get the error from the api, or set a default error message
+                var error = typeof (responsePayload.Error) == 'string' ? responsePayload.Error : 'An error has occured, please try again';
+
+                // Set the formError field with the error text
+                document.querySelector("#" + formId + " .formError").innerHTML = error;
+
+                // Show (unhide) the form error field on the form
+                document.querySelector("#" + formId + " .formError").style.display = 'block';
+              }
             } else {
-
-              // Try to get the error from the api, or set a default error message
-              var error = typeof (responsePayload.Error) == 'string' ? responsePayload.Error : 'An error has occured, please try again';
-
-              // Set the formError field with the error text
-              document.querySelector("#" + formId + " .formError").innerHTML = error;
-
-              // Show (unhide) the form error field on the form
-              document.querySelector("#" + formId + " .formError").style.display = 'block';
+              // If successful, send to form response processor
+              app.formResponseProcessor(formId, payload, responsePayload);
             }
-          } else {
-            // If successful, send to form response processor
-            app.formResponseProcessor(formId, payload, responsePayload);
-          }
 
-        });
+          });
       });
     }
   }
@@ -234,6 +242,13 @@ app.formResponseProcessor = function (formId, requestPayload, responsePayload) {
   var formsWithSuccessMessages = ['accountEdit1', 'accountEdit2'];
   if (formsWithSuccessMessages.indexOf(formId) > -1) {
     document.querySelector("#" + formId + " .formSuccess").style.display = 'block';
+  }
+
+  // If the user just deleted their account, redirect them to
+  // the account-deleted page
+  if (formId == 'accountEdit3') {
+    app.logUserOut(false);
+    window.location = '/account/deleted';
   }
 
 };
