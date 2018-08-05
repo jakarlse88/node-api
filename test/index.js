@@ -3,38 +3,14 @@
  * 
  */
 
-// Dependencies
-const _utils = require('../lib/utils');
-const assert = require('assert');
-
 // Application logic for the test runner
 _app = {};
 
 // Container for the tests
-_app.tests = {
-    'unit': {}
-};
+_app.tests = {};
 
-// Assert that the getANumber function is returning a number
-_app.tests.unit['utils.getANumber should return a number'] = done => {
-    const val = _utils.getANumber();
-    assert.equal(typeof (val), 'number');
-    done();
-};
-
-// Assert that the getANumber function is returning a 1
-_app.tests.unit['utils.getANumber should return 1'] = done => {
-    const val = _utils.getANumber();
-    assert.equal(val, 1);
-    done();
-};
-
-// Assert that the getANumber function is returning a 2
-_app.tests.unit['utils.getANumber should return 2'] = done => {
-    const val = _utils.getANumber();
-    assert.equal(val, 2);
-    done();
-};
+// Add on the unit tests
+_app.tests.unit = require('./unit');
 
 // Count tests
 _app.countTests = () => {
